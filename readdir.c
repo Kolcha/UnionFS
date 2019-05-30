@@ -37,7 +37,7 @@ int ufs_opendir(struct unityfs* fs, const char* path, struct ufs_dir** rdir)
   }
 
   /* no directories where opened or error happened after some successful open(s) */
-  if (!udir->current_dir || (errno != 0 && errno != ENOENT)) {
+  if (!*udir->opened_dirs || (errno != 0 && errno != ENOENT)) {
     ufs_closedir(fs, udir);
     return -errno;
   }
