@@ -9,6 +9,7 @@ unityfs_SOURCES =	\
 	disk.h		\
 	init.c		\
 	io.c		\
+	links.c		\
 	main2.c		\
 	ordered_set.c	\
 	ordered_set.h	\
