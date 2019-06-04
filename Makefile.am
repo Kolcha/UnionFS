@@ -13,7 +13,8 @@ unityfs_SOURCES =	\
 	private.c	\
 	private.h	\
 	readdir.c	\
-	unityfs.h
+	unityfs.h	\
+	xattrs.c
 unityfs_CPPFLAGS = -I$(srcdir) -DFUSE_USE_VERSION=32 $(fuse3_CFLAGS)
 unityfs_LDADD = $(fuse3_LIBS)
 

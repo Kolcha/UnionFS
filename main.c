@@ -126,6 +126,30 @@ static int f3_ufs_fsync(const char* path, int datasync, struct fuse_file_info* f
   return ufs_fsync(fs, (ufs_fd_t)fi->fh, !datasync);
 }
 
+static int f3_ufs_setxattr(const char* path, const char* name, const char* value, size_t size, int flags)
+{
+  struct unityfs* fs = fuse_get_context()->private_data;
+  return ufs_setxattr(fs, path, name, value, size, flags);
+}
+
+static int f3_ufs_getxattr(const char* path, const char* name, char* value, size_t size)
+{
+  struct unityfs* fs = fuse_get_context()->private_data;
+  return (int)ufs_getxattr(fs, path, name, value, size);
+}
+
+static int f3_ufs_listxattr(const char* path, char* list, size_t size)
+{
+  struct unityfs* fs = fuse_get_context()->private_data;
+  return (int)ufs_listxattr(fs, path, list, size);
+}
+
+static int f3_ufs_removexattr(const char* path, const char* name)
+{
+  struct unityfs* fs = fuse_get_context()->private_data;
+  return ufs_removexattr(fs, path, name);
+}
+
 static int f3_ufs_opendir(const char* path, struct fuse_file_info* fi)
 {
   struct unityfs* fs = fuse_get_context()->private_data;
@@ -205,6 +229,10 @@ static struct fuse_operations f3_ufs_oper = {
   .statfs     = f3_ufs_statfs,
   .release    = f3_ufs_release,
   .fsync      = f3_ufs_fsync,
+  .setxattr   = f3_ufs_setxattr,
+  .getxattr   = f3_ufs_getxattr,
+  .listxattr  = f3_ufs_listxattr,
+  .removexattr= f3_ufs_removexattr,
   .opendir    = f3_ufs_opendir,
   .readdir    = f3_ufs_readdir,
   .releasedir = f3_ufs_releasedir,

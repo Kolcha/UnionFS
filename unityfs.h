@@ -40,6 +40,14 @@ ssize_t ufs_write(struct unityfs* fs, ufs_fd_t fd, off_t offset, size_t size, co
 int ufs_statfs(struct unityfs* fs, const char* path, struct statvfs* stbuf);
 int ufs_close(struct unityfs* fs, ufs_fd_t fd);
 int ufs_fsync(struct unityfs* fs, ufs_fd_t fd, int sync_metadata);
+int ufs_setxattr(struct unityfs* fs, const char* path, const char* name, const void* value, size_t size, int flags);
+int ufs_fsetxattr(struct unityfs* fs, ufs_fd_t fd, const char* name, const void* value, size_t size, int flags);
+ssize_t ufs_getxattr(struct unityfs* fs, const char* path, const char* name, void* value, size_t size);
+ssize_t ufs_fgetxattr(struct unityfs* fs, ufs_fd_t fd, const char* name, void* value, size_t size);
+ssize_t ufs_listxattr(struct unityfs* fs, const char* path, char* list, size_t size);
+ssize_t ufs_flistxattr(struct unityfs* fs, ufs_fd_t fd, char* list, size_t size);
+int ufs_removexattr(struct unityfs* fs, const char* path, const char* name);
+int ufs_fremovexattr(struct unityfs* fs, ufs_fd_t fd, const char* name);
 int ufs_opendir(struct unityfs* fs, const char* path, ufs_dir_t** dir);
 int ufs_readdir(struct unityfs* fs, ufs_dir_t* dir, struct dirent** entry);
 int ufs_closedir(struct unityfs* fs, ufs_dir_t* dir);
