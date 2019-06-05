@@ -140,5 +140,5 @@ int ufs_fsync(struct unityfs* fs, ufs_fd_t fd, int sync_metadata)
 {
   (void) fs;
   int(*func)(int) = sync_metadata ? &fsync : &fdatasync;
-  return (*func)(fd) == 0 ? 0 : -1;
+  return (*func)(fd) == 0 ? 0 : -errno;
 }
