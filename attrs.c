@@ -37,6 +37,7 @@ int ufs_getattr(struct unityfs* fs, const char* path, struct stat* stbuf)
 
     if (!item_found) {
       *stbuf = buf;
+      stbuf->st_ino = calc_ino(fs, buf.st_dev, buf.st_ino);
       item_found = true;
     } else {
       stbuf->st_nlink += buf.st_nlink - 2;
@@ -55,8 +56,11 @@ int ufs_getattr(struct unityfs* fs, const char* path, struct stat* stbuf)
 
 int ufs_fgetattr(struct unityfs* fs, ufs_fd_t fd, struct stat* stbuf)
 {
-  (void) fs;
-  return fstat(fd, stbuf) == 0 ? 0 : -errno;
+  if (fstat(fd, stbuf) != 0)
+    return -errno;
+
+  stbuf->st_ino = calc_ino(fs, stbuf->st_dev, stbuf->st_ino);
+  return 0;
 }
 
 int ufs_chmod(struct unityfs* fs, const char* path, mode_t mode)

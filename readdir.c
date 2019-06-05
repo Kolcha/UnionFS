@@ -10,6 +10,7 @@ struct ufs_dir {
   DIR** opened_dirs;
   DIR** current_dir;
   ordered_set_t* known_names;
+  dev_t* o_dir_disks;
 };
 
 int ufs_opendir(struct unityfs* fs, const char* path, struct ufs_dir** rdir)
@@ -18,6 +19,7 @@ int ufs_opendir(struct unityfs* fs, const char* path, struct ufs_dir** rdir)
   udir->opened_dirs = calloc(fs->disks_count + 1, sizeof(DIR*));
   udir->current_dir = udir->opened_dirs;
   udir->known_names = ordered_set_create();
+  udir->o_dir_disks = NULL;
 
   DIR** opened_dir = udir->opened_dirs;
 
@@ -42,14 +44,23 @@ int ufs_opendir(struct unityfs* fs, const char* path, struct ufs_dir** rdir)
     return -errno;
   }
 
+  /* store device ids for disks where directories were opened */
+  udir->o_dir_disks = calloc((size_t)(opened_dir - udir->opened_dirs), sizeof(dev_t));
+  for (DIR** d = udir->opened_dirs; d != opened_dir; ++d) {
+    struct stat stbuf;
+    if (fstat(dirfd(*d), &stbuf) != 0) {
+      ufs_closedir(fs, udir);
+      return -errno;
+    }
+    udir->o_dir_disks[d - udir->opened_dirs] = stbuf.st_dev;
+  }
+
   *rdir = udir;
   return 0;
 }
 
 int ufs_readdir(struct unityfs* fs, struct ufs_dir* dir, struct dirent** rentry)
 {
-  (void) fs;
-
   while (*dir->current_dir) {
     errno = 0;
     struct dirent* entry = readdir(*dir->current_dir);
@@ -65,6 +76,8 @@ int ufs_readdir(struct unityfs* fs, struct ufs_dir* dir, struct dirent** rentry)
     }
 
     if (ordered_set_insert(dir->known_names, entry->d_name)) {
+      dev_t dev_id = dir->o_dir_disks[dir->current_dir - dir->opened_dirs];
+      entry->d_ino = calc_ino(fs, dev_id, entry->d_ino);
       *rentry = entry;
       return 0;
     }
@@ -82,6 +95,8 @@ int ufs_closedir(struct unityfs* fs, struct ufs_dir* dir)
   for (DIR** d = dir->opened_dirs; *d; ++d)
     closedir(*d);
   free(dir->opened_dirs);
+  if (dir->o_dir_disks)
+    free(dir->o_dir_disks);
   free(dir);
   return 0;
 }

@@ -5,8 +5,11 @@
 #include <stdint.h>
 #include <time.h>
 
+#include <sys/types.h>
+
 struct ufs_disk {
   char* mountpoint;
+  dev_t device_id;
   uint64_t max_inodes;
   uint64_t inode_offset;
   uint64_t mount_flags;
@@ -23,5 +26,7 @@ struct unityfs {
 
 char* get_real_path(struct ufs_disk* disk, const char* path);
 char* new_real_path(struct unityfs* fs, const char* path);
+
+ino_t calc_ino(struct unityfs* fs, dev_t dev_id, ino_t orig_ino);
 
 #endif // UNITYFS_PRIVATE_H
