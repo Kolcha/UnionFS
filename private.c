@@ -37,11 +37,11 @@ static struct ufs_disk* select_disk_by_free_space(struct ufs_disk* disks[])
   uint64_t max_free_space = get_disk_free_space(selected_disk->mountpoint);
 
   for (struct ufs_disk** disk_iter = disks + 1; *disk_iter; ++disk_iter) {
-      uint64_t free_space = get_disk_free_space((*disk_iter)->mountpoint);
-      if (free_space > max_free_space) {
-        max_free_space = free_space;
-        selected_disk = *disk_iter;
-      }
+    uint64_t free_space = get_disk_free_space((*disk_iter)->mountpoint);
+    if (free_space > max_free_space) {
+      max_free_space = free_space;
+      selected_disk = *disk_iter;
+    }
   }
 
   return selected_disk;
