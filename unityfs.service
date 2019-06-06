@@ -4,8 +4,8 @@ Description=UnityFS service
 [Service]
 Type=forking
 ExecStartPre=sh -c '[ -d /run/unityfs ] || mkdir /run/unityfs'
-ExecStart=unityfs -o default_permissions,allow_other /run/unityfs
-ExecStop=fusermount3 -u /run/unityfs
+ExecStart=unityfs -o default_permissions,allow_other,hard_remove,use_ino,readdir_ino,direct_io,big_writes /run/unityfs
+ExecStop=fusermount -u /run/unityfs
 
 [Install]
 WantedBy=basic.target
