@@ -50,6 +50,7 @@ int ufs_removexattr(struct unityfs* fs, const char* path, const char* name);
 int ufs_fremovexattr(struct unityfs* fs, ufs_fd_t fd, const char* name);
 int ufs_opendir(struct unityfs* fs, const char* path, ufs_dir_t** dir);
 int ufs_readdir(struct unityfs* fs, ufs_dir_t* dir, struct dirent** entry);
+int ufs_readdir_plus(struct unityfs* fs, ufs_dir_t* dir, struct dirent** entry, struct stat* stbuf);
 int ufs_closedir(struct unityfs* fs, ufs_dir_t* dir);
 int ufs_utimens(struct unityfs* fs, const char* path, const struct timespec times[2]);
 int ufs_futimens(struct unityfs* fs, ufs_fd_t fd, const struct timespec times[2]);

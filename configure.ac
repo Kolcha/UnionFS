@@ -31,7 +31,7 @@ AC_FUNC_CHOWN
 AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([ftruncate memset mkdir rmdir strdup])
+AC_CHECK_FUNCS([fchdir ftruncate getcwd memset mkdir rmdir strdup])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

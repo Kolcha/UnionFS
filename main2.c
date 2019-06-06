@@ -160,9 +160,10 @@ static int f2_ufs_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
 
   struct unityfs* fs = fuse_get_context()->private_data;
   struct dirent* entry;
+  struct stat stbuf;
   int res = 0;
-  while ((res = ufs_readdir(fs, (ufs_dir_t*)fi->fh, &entry)) == 0 && entry) {
-    filler(buf, entry->d_name, NULL, 0);
+  while ((res = ufs_readdir_plus(fs, (ufs_dir_t*)fi->fh, &entry, &stbuf)) == 0 && entry) {
+    filler(buf, entry->d_name, &stbuf, 0);
   }
   return res;
 }

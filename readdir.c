@@ -4,6 +4,8 @@
 #include <errno.h>
 #include <stdlib.h>
 
+#include <unistd.h>
+
 #include "ordered_set.h"
 
 struct ufs_dir {
@@ -61,6 +63,11 @@ int ufs_opendir(struct unityfs* fs, const char* path, struct ufs_dir** rdir)
 
 int ufs_readdir(struct unityfs* fs, struct ufs_dir* dir, struct dirent** rentry)
 {
+  return ufs_readdir_plus(fs, dir, rentry, NULL);
+}
+
+int ufs_readdir_plus(struct unityfs* fs, struct ufs_dir* dir, struct dirent** rentry, struct stat* stbuf)
+{
   while (*dir->current_dir) {
     errno = 0;
     struct dirent* entry = readdir(*dir->current_dir);
@@ -78,6 +85,31 @@ int ufs_readdir(struct unityfs* fs, struct ufs_dir* dir, struct dirent** rentry)
     if (ordered_set_insert(dir->known_names, entry->d_name)) {
       dev_t dev_id = dir->o_dir_disks[dir->current_dir - dir->opened_dirs];
       entry->d_ino = calc_ino(fs, dev_id, entry->d_ino);
+
+      /* "Plus" mode */
+      if (stbuf) {
+        char old_cwd[PATH_MAX];
+        if (!getcwd(old_cwd, sizeof(old_cwd)))
+          break;
+
+        int dir_fd = dirfd(*dir->current_dir);
+        if (dir_fd < 0)
+          break;
+
+        if (fchdir(dir_fd) != 0)
+          break;
+
+        int stat_res = lstat(entry->d_name, stbuf);
+
+        if (chdir(old_cwd) != 0)
+          break;
+
+        if (stat_res != 0)
+          break;
+
+        stbuf->st_ino = entry->d_ino;
+      }
+
       *rentry = entry;
       return 0;
     }
