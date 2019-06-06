@@ -1,0 +1,18 @@
+language: c
+compiler: gcc
+
+os: linux
+dist: xenial
+
+addons:
+  apt:
+    packages:
+      - libfuse-dev
+
+script:
+  - autoreconf -i
+  - ./configure
+  - make
+
+before_deploy:
+  - make dist
