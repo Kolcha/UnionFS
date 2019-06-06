@@ -11,7 +11,7 @@ AM_INIT_AUTOMAKE([foreign])
 AC_PROG_CC
 
 # Checks for libraries.
-PKG_CHECK_MODULES(fuse3, fuse3 >= 3.2)
+PKG_CHECK_MODULES(fuse, fuse >= 2.6)
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h stddef.h stdint.h stdlib.h string.h sys/statvfs.h unistd.h])

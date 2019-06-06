@@ -7,7 +7,7 @@ unityfs_SOURCES =	\
 	disk.h		\
 	init.c		\
 	io.c		\
-	main.c		\
+	main2.c		\
 	ordered_set.c	\
 	ordered_set.h	\
 	private.c	\
@@ -15,8 +15,8 @@ unityfs_SOURCES =	\
 	readdir.c	\
 	unityfs.h	\
 	xattrs.c
-unityfs_CPPFLAGS = -I$(srcdir) -DFUSE_USE_VERSION=32 $(fuse3_CFLAGS)
-unityfs_LDADD = $(fuse3_LIBS)
+unityfs_CPPFLAGS = -I$(srcdir) -DFUSE_USE_VERSION=26 $(fuse_CFLAGS)
+unityfs_LDADD = $(fuse_LIBS)
 
 systemdunitsdir = $(libdir)/systemd/system
 dist_systemdunits_DATA = $(srcdir)/unityfs.service
