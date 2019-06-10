@@ -54,6 +54,10 @@ static struct ufs_disk* select_disk(struct unityfs* fs, const char* path)
   struct ufs_disk** parent_disk_iter = parent_disks;
 
   for (struct ufs_disk* disk = fs->all_disks; disk != fs->all_disks + fs->disks_count; ++disk) {
+    /* skip read-only filesystems */
+    if (disk->mount_flags & ST_RDONLY)
+      continue;
+
     char* real_path = get_real_path(disk, path);
 
     if (is_path_exists(dirname(real_path)))
@@ -61,7 +65,7 @@ static struct ufs_disk* select_disk(struct unityfs* fs, const char* path)
 
     free(real_path);
   }
-  /* this must not happen... but just for completeness */
+  /* consider "nothing found" as "found everywhere", this will lead to exact error later */
   if (parent_disk_iter == parent_disks)
     for (struct ufs_disk* disk = fs->all_disks; disk != fs->all_disks + fs->disks_count; ++disk)
       *parent_disk_iter++ = disk;
