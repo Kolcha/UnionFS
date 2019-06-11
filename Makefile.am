@@ -1,6 +1,8 @@
 bin_PROGRAMS = unityfs
 unityfs_SOURCES =	\
 	attrs.c		\
+	config_file.c	\
+	config_file.h	\
 	core.c		\
 	core.h		\
 	disk.c		\
