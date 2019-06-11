@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include <sys/statvfs.h>
 
+#include "disk.h"
+
 char* get_real_path(struct ufs_disk* disk, const char* path)
 {
   char* real_path = calloc(strlen(disk->mountpoint) + strlen(path) + 1, sizeof(char));
@@ -55,7 +57,7 @@ static struct ufs_disk* select_disk(struct unityfs* fs, const char* path)
 
   for (struct ufs_disk* disk = fs->all_disks; disk != fs->all_disks + fs->disks_count; ++disk) {
     /* skip read-only filesystems */
-    if (disk->mount_flags & ST_RDONLY)
+    if (disk->mount_flags & ST_RDONLY || disk->custom_flags & UFS_DISK_NO_WRITES)
       continue;
 
     char* real_path = get_real_path(disk, path);
