@@ -3,8 +3,8 @@
 
 struct unityfs;
 
-/** don't use this disk for new files */
-#define UFS_DISK_NO_WRITES   0x00000001
+/** exclude disk from shared folder targets list */
+#define UFS_DISK_NO_SHARED_WRITES           0x00000001
 
 int ufs_add_disk(struct unityfs* fs, const char* mountpoint, unsigned int flags);
 

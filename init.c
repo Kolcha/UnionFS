@@ -84,8 +84,8 @@ static void on_option_found(void* section_data, const char* key, const char* val
     entry->mountpoint = strdup(value);
 
   bool no_writes = false;
-  if (strcmp(key, "no writes") == 0 && parse_bool(value, &no_writes) && no_writes)
-    entry->flags |= UFS_DISK_NO_WRITES;
+  if (strcmp(key, "no shared writes") == 0 && parse_bool(value, &no_writes) && no_writes)
+    entry->flags |= UFS_DISK_NO_SHARED_WRITES;
 }
 
 struct unityfs* ufs_init(void)
