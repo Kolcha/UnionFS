@@ -7,6 +7,10 @@
 
 #include <sys/types.h>
 
+struct ufs_config {
+  uint32_t disk_cache_timeout;
+};
+
 struct ufs_disk {
   char* mountpoint;
   dev_t device_id;
@@ -18,6 +22,7 @@ struct ufs_disk {
 };
 
 struct unityfs {
+  struct ufs_config* config;
   struct ufs_disk* all_disks;
   size_t disks_count;
   time_t last_disk_selection;

@@ -100,7 +100,7 @@ static struct ufs_disk* select_disk(struct unityfs* fs, const char* path)
 
   time_t now = time(NULL);
   /* if last disk selection happened long time ago - select new disk by free space */
-  if (now - fs->last_disk_selection < 3600) {
+  if (now - fs->last_disk_selection < fs->config->disk_cache_timeout) {
     assert(fs->last_used_disk);
     /* if last used disk in list with disks contain parent path - select next disk */
     parent_disk_iter = parent_disks;

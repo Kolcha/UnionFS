@@ -5,7 +5,17 @@
 
 struct unityfs* unityfs_create()
 {
-  return calloc(1, sizeof(struct unityfs));
+  struct unityfs* fs = calloc(1, sizeof(struct unityfs));
+  if (fs) {
+    fs->config = calloc(1, sizeof(struct ufs_config));
+    if (fs->config) {
+      fs->config->disk_cache_timeout = 3600;
+    } else {
+      unityfs_destroy(fs);
+      fs = NULL;
+    }
+  }
+  return fs;
 }
 
 void unityfs_destroy(struct unityfs* fs)
@@ -15,5 +25,7 @@ void unityfs_destroy(struct unityfs* fs)
       free(fs->all_disks[i].mountpoint);
     free(fs->all_disks);
   }
+  if (fs->config)
+    free(fs->config);
   free(fs);
 }
