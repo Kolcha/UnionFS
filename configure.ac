@@ -9,6 +9,7 @@ AM_INIT_AUTOMAKE([foreign])
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_SED
 
 # Checks for libraries.
 PKG_CHECK_MODULES(fuse, fuse >= 2.6)

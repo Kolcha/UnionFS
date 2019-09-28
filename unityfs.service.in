@@ -1,0 +1,11 @@
+[Unit]
+Description=UnityFS service
+
+[Service]
+Type=forking
+ExecStartPre=/bin/sh -c '[ -d /run/unityfs ] || mkdir /run/unityfs'
+ExecStart=@bindir@/unityfs -o default_permissions,allow_other,hard_remove,use_ino,readdir_ino,direct_io,big_writes /run/unityfs
+ExecStop=/usr/bin/fusermount -u /run/unityfs
+
+[Install]
+WantedBy=basic.target
