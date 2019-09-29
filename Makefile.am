@@ -20,6 +20,7 @@ unityfs_SOURCES =	\
 unityfs_CPPFLAGS = -I$(srcdir) -DFUSE_USE_VERSION=26 $(fuse_CFLAGS)
 unityfs_LDADD = $(fuse_LIBS)
 
+if install_systemd_unit
 systemdunitsdir = $(libdir)/systemd/system
 systemdunits_DATA = $(builddir)/unityfs.service
 
@@ -28,4 +29,6 @@ unityfs.service: unityfs.service.in Makefile
 	< $(srcdir)/unityfs.service.in > unityfs.service
 
 CLEANFILES = $(systemdunits_DATA)
+endif
+
 EXTRA_DIST = unityfs.service.in

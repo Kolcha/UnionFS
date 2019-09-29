@@ -11,7 +11,7 @@ addons:
 
 script:
   - autoreconf -i
-  - ./configure
+  - ./configure --enable-systemd
   - make
 
 before_deploy:

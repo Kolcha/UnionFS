@@ -34,5 +34,9 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([fchdir ftruncate getcwd memset mkdir rmdir strcasecmp strchr strdup])
 
+AC_ARG_ENABLE([systemd],
+    [AS_HELP_STRING([--enable-systemd], [install the systemd service file])], [], [enable_systemd=no])
+AM_CONDITIONAL([install_systemd_unit], [test "x$enable_systemd" != "xno"])
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
