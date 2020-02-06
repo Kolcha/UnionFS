@@ -2,7 +2,7 @@ language: c
 compiler: gcc
 
 os: linux
-dist: xenial
+dist: bionic
 
 addons:
   apt:
