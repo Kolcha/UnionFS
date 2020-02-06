@@ -7,6 +7,7 @@
 #include <libgen.h>
 #include <sys/stat.h>
 #include <sys/statvfs.h>
+#include <unistd.h>
 
 #include "disk.h"
 
@@ -16,12 +17,6 @@ char* get_real_path(struct ufs_disk* disk, const char* path)
   strcpy(real_path, disk->mountpoint);
   strcat(real_path, path);
   return real_path;
-}
-
-static int is_path_exists(const char* path)
-{
-  struct stat stbuf;
-  return lstat(path, &stbuf) == 0;
 }
 
 static uint64_t get_disk_free_space(const char* mountpoint)
@@ -58,7 +53,7 @@ static struct ufs_disk* select_disk(struct unityfs* fs, const char* path)
   for (struct ufs_disk* disk = fs->all_disks; disk != fs->all_disks + fs->disks_count; ++disk) {
     char* real_path = get_real_path(disk, path);
 
-    if (is_path_exists(dirname(real_path)))
+    if (access(dirname(real_path), F_OK) == 0)
       *parent_disk_iter++ = disk;
 
     free(real_path);

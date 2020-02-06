@@ -8,12 +8,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-static bool is_path_exists(const char* path)
-{
-  struct stat stbuf;
-  return stat(path, &stbuf) == 0;
-}
-
 int ufs_readlink(struct unityfs* fs, const char* path, char* buf, size_t sz)
 {
   for (struct ufs_disk* disk = fs->all_disks; disk != fs->all_disks + fs->disks_count; ++disk) {
@@ -51,7 +45,7 @@ int ufs_remove(struct unityfs* fs, const char* path)
     errno = 0;
     int res = unlink(real_path);
 
-    if (res != 0 && errno == EROFS && !is_path_exists(real_path))
+    if (res != 0 && errno == EROFS && access(real_path, F_OK) != 0)
       errno = ENOENT;
 
     free(real_path);
@@ -72,7 +66,7 @@ int ufs_rmdir(struct unityfs* fs, const char* path)
     if (rmdir(real_path) == 0)
       dir_removed = true;
 
-    if (!dir_removed && errno == EROFS && !is_path_exists(real_path))
+    if (!dir_removed && errno == EROFS && access(real_path, F_OK) != 0)
       errno = ENOENT;
 
     free(real_path);
