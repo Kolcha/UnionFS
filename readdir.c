@@ -127,8 +127,7 @@ int ufs_closedir(struct unityfs* fs, struct ufs_dir* dir)
   for (DIR** d = dir->opened_dirs; *d; ++d)
     closedir(*d);
   free(dir->opened_dirs);
-  if (dir->o_dir_disks)
-    free(dir->o_dir_disks);
+  free(dir->o_dir_disks);
   free(dir);
   return 0;
 }

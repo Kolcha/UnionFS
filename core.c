@@ -20,12 +20,11 @@ struct unityfs* unityfs_create()
 
 void unityfs_destroy(struct unityfs* fs)
 {
-  if (fs->all_disks) {
+  if (fs && fs->all_disks) {
     for (size_t i = 0; i < fs->disks_count; i++)
       free(fs->all_disks[i].mountpoint);
     free(fs->all_disks);
   }
-  if (fs->config)
-    free(fs->config);
+  free(fs->config);
   free(fs);
 }
