@@ -71,9 +71,6 @@ void config_read_file(const char* filename, struct config_event_handlers* handle
   void* section_data = NULL;
 
   while ((nread = getline(&line, &len, f)) != -1) {
-    if (line[nread-1] == '\n')
-      line[nread-1] = '\0';
-
     char* trimmed_line = trim_space(line);
 
     if (!is_commented_line(trimmed_line)) {
@@ -91,17 +88,12 @@ void config_read_file(const char* filename, struct config_event_handlers* handle
           handlers->option_found(section_data, key, value, user_data);
       }
     }
-
-    free(line);
-    line = NULL;
-    len = 0;
   }
 
   if (section_found)
     handlers->section_end(section_data, user_data);
 
-  if (len > 0)
-    free(line);
+  free(line);
 
   fclose(f);
 }

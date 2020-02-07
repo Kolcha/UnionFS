@@ -27,14 +27,9 @@ static void add_disks_from_file(struct unityfs* fs, const char* filename)
       line[nread-1] = '\0';
 
     ufs_add_disk(fs, line, 0);
-
-    free(line);
-    line = NULL;
-    len = 0;
   }
 
-  if (len > 0)
-    free(line);
+  free(line);
 
   fclose(f);
 }
