@@ -249,6 +249,8 @@ static struct fuse_operations f2_ufs_oper = {
 
   .flag_nullpath_ok = 1,
   .flag_nopath      = 1,
+
+  .flag_utime_omit_ok = 1,
 };
 
 int main(int argc, char* argv[])
