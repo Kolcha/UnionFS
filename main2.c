@@ -246,6 +246,9 @@ static struct fuse_operations f2_ufs_oper = {
   .ftruncate  = f2_ufs_ftruncate,
   .fgetattr   = f2_ufs_fgetattr,
   .utimens    = f2_ufs_utimens,
+
+  .flag_nullpath_ok = 1,
+  .flag_nopath      = 1,
 };
 
 int main(int argc, char* argv[])
