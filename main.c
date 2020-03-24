@@ -61,6 +61,17 @@ static int f3_ufs_rmdir(const char* path)
   return ufs_rmdir(fs, path);
 }
 
+static int f3_ufs_symlink(const char* target, const char* link_path)
+{
+  struct fuse_context* fctx = fuse_get_context();
+  struct unityfs* fs = fctx->private_data;
+  struct process_context pctx;
+  change_process_context(fctx, &pctx);
+  int res = ufs_symlink(fs, target, link_path);
+  restore_process_context(&pctx);
+  return res;
+}
+
 static int f3_ufs_chmod(const char* path, mode_t mode, struct fuse_file_info* fi)
 {
   struct unityfs* fs = fuse_get_context()->private_data;
@@ -224,7 +235,7 @@ static struct fuse_operations f3_ufs_oper = {
   .mkdir      = f3_ufs_mkdir,
   .unlink     = f3_ufs_unlink,
   .rmdir      = f3_ufs_rmdir,
-/*  .symlink    = f3_ufs_symlink, */
+  .symlink    = f3_ufs_symlink,
 /*  .rename     = f3_ufs_rename, */
 /*  .link       = f3_ufs_link, */
   .chmod      = f3_ufs_chmod,

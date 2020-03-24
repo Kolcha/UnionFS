@@ -24,7 +24,7 @@ int ufs_readlink(struct unityfs* fs, const char* path, char* buf, size_t sz);
 int ufs_mkdir(struct unityfs* fs, const char* path, mode_t mode);
 int ufs_remove(struct unityfs* fs, const char* path);
 int ufs_rmdir(struct unityfs* fs, const char* path);
-/*int ufs_symlink(struct unityfs* fs, const char* target, const char* link_path);*/
+int ufs_symlink(struct unityfs* fs, const char* target, const char* link_path);
 /*int ufs_rename(struct unityfs* fs, const char* old_path, const char* new_path);*/
 /*int ufs_link(struct unityfs* fs, const char* target, const char* link_path);*/
 int ufs_chmod(struct unityfs* fs, const char* path, mode_t mode);
