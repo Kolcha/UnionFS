@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include <fuse.h>
+#include <fuse_lowlevel.h>
 
 #include "unityfs.h"
 
@@ -190,7 +191,7 @@ static void* f3_ufs_init(struct fuse_conn_info* conn, struct fuse_config* cfg)
 {
   (void) conn;
   (void) cfg;
-  return ufs_init();
+  return ufs_init(fuse_get_context()->private_data);
 }
 
 static void f3_ufs_destroy(void* private_data)
@@ -250,6 +251,18 @@ static struct fuse_operations f3_ufs_oper = {
 
 int main(int argc, char* argv[])
 {
+  struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
+  struct fuse_cmdline_opts opts;
+
+  if (fuse_parse_cmdline(&args, &opts) != 0)
+    return 1;
+
   umask(0);
-  return fuse_main(argc, argv, &f3_ufs_oper, NULL);
+
+  int res = fuse_main(argc, argv, &f3_ufs_oper, opts.mountpoint);
+
+  free(opts.mountpoint);
+  fuse_opt_free_args(&args);
+
+  return res;
 }

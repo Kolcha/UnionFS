@@ -120,9 +120,13 @@ static void on_option_found(void* section_data, const char* key, const char* val
   }
 }
 
-struct unityfs* ufs_init(void)
+struct unityfs* ufs_init(const char* mountpoint)
 {
   struct unityfs* fs = unityfs_create();
+  if (!fs)
+    return fs;
+
+  fs->mountpoint = mountpoint;
 
   struct config_event_handlers cfg_handlers = {
     .section_start = on_section_start,

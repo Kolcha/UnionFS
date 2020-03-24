@@ -14,7 +14,7 @@ typedef int ufs_fd_t;
 struct ufs_dir;
 typedef struct ufs_dir ufs_dir_t;
 
-struct unityfs* ufs_init(void);
+struct unityfs* ufs_init(const char* mountpoint);
 void ufs_shutdown(struct unityfs* fs);
 
 int ufs_getattr(struct unityfs* fs, const char* path, struct stat* stbuf);

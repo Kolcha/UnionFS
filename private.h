@@ -22,6 +22,7 @@ struct ufs_disk {
 };
 
 struct unityfs {
+  const char* mountpoint;
   struct ufs_config* config;
   struct ufs_disk* all_disks;
   size_t disks_count;

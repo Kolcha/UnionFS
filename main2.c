@@ -178,7 +178,7 @@ static int f2_ufs_releasedir(const char* path, struct fuse_file_info* fi)
 static void* f2_ufs_init(struct fuse_conn_info* conn)
 {
   (void) conn;
-  return ufs_init();
+  return ufs_init(fuse_get_context()->private_data);
 }
 
 static void f2_ufs_destroy(void* private_data)
@@ -255,6 +255,18 @@ static struct fuse_operations f2_ufs_oper = {
 
 int main(int argc, char* argv[])
 {
+  struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
+  char* mountpoint;
+
+  if (fuse_parse_cmdline(&args, &mountpoint, NULL, NULL) == -1)
+    return 1;
+
   umask(0);
-  return fuse_main(argc, argv, &f2_ufs_oper, NULL);
+
+  int res = fuse_main(argc, argv, &f2_ufs_oper, mountpoint);
+
+  free(mountpoint);
+  fuse_opt_free_args(&args);
+
+  return res;
 }
