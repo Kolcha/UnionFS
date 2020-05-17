@@ -10,19 +10,19 @@
 
 static int f2_ufs_getattr(const char* path, struct stat* stbuf)
 {
-  return ufs_getattr(fuse_get_context()->private_data, path, stbuf);
+  return ufs_getattr(get_unityfs(fuse_get_context()), path, stbuf);
 }
 
 static int f2_ufs_readlink(const char* path, char* buf, size_t bufsize)
 {
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return ufs_readlink(fs, path, buf, bufsize);
 }
 
 static int f2_ufs_mkdir(const char* path, mode_t mode)
 {
   struct fuse_context* fctx = fuse_get_context();
-  struct unityfs* fs = fctx->private_data;
+  struct unityfs* fs = get_unityfs(fctx);
   struct process_context pctx;
   change_process_context(fctx, &pctx);
   int res = ufs_mkdir(fs, path, mode);
@@ -32,20 +32,20 @@ static int f2_ufs_mkdir(const char* path, mode_t mode)
 
 static int f2_ufs_unlink(const char* path)
 {
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return ufs_remove(fs, path);
 }
 
 static int f2_ufs_rmdir(const char* path)
 {
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return ufs_rmdir(fs, path);
 }
 
 static int f2_ufs_symlink(const char* target, const char* link_path)
 {
   struct fuse_context* fctx = fuse_get_context();
-  struct unityfs* fs = fctx->private_data;
+  struct unityfs* fs = get_unityfs(fctx);
   struct process_context pctx;
   change_process_context(fctx, &pctx);
   int res = ufs_symlink(fs, target, link_path);
@@ -55,23 +55,23 @@ static int f2_ufs_symlink(const char* target, const char* link_path)
 
 static int f2_ufs_chmod(const char* path, mode_t mode)
 {
-  return ufs_chmod(fuse_get_context()->private_data, path, mode);
+  return ufs_chmod(get_unityfs(fuse_get_context()), path, mode);
 }
 
 static int f2_ufs_chown(const char* path, uid_t uid, gid_t gid)
 {
-  return ufs_chown(fuse_get_context()->private_data, path, uid, gid);
+  return ufs_chown(get_unityfs(fuse_get_context()), path, uid, gid);
 }
 
 static int f2_ufs_truncate(const char* path, off_t offset)
 {
-  return ufs_truncate(fuse_get_context()->private_data, path, offset);
+  return ufs_truncate(get_unityfs(fuse_get_context()), path, offset);
 }
 
 static int f2_ufs_open(const char* path, struct fuse_file_info* fi)
 {
   struct fuse_context* fctx = fuse_get_context();
-  struct unityfs* fs = fctx->private_data;
+  struct unityfs* fs = get_unityfs(fctx);
   struct process_context pctx;
   change_process_context(fctx, &pctx);
   int res = ufs_open(fs, path, fi->flags, (ufs_fd_t*)&fi->fh);
@@ -83,66 +83,65 @@ static int f2_ufs_read(const char* path, char* buffer, size_t size, off_t offset
                        struct fuse_file_info* fi)
 {
   (void) path;
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return (int)ufs_read(fs, (ufs_fd_t)fi->fh, offset, size, buffer);
 }
-
 
 static int f2_ufs_write(const char* path, const char* buffer, size_t size, off_t offset,
                         struct fuse_file_info* fi)
 {
   (void) path;
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return (int)ufs_write(fs, (ufs_fd_t)fi->fh, offset, size, buffer);
 }
 
 static int f2_ufs_statfs(const char* path, struct statvfs* stbuf)
 {
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return ufs_statfs(fs, path, stbuf);
 }
 
 static int f2_ufs_release(const char* path, struct fuse_file_info* fi)
 {
   (void) path;
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return ufs_close(fs, (ufs_fd_t)fi->fh);
 }
 
 static int f2_ufs_fsync(const char* path, int datasync, struct fuse_file_info* fi)
 {
   (void) path;
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return ufs_fsync(fs, (ufs_fd_t)fi->fh, !datasync);
 }
 
 static int f2_ufs_setxattr(const char* path, const char* name, const char* value, size_t size, int flags)
 {
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return ufs_setxattr(fs, path, name, value, size, flags);
 }
 
 static int f2_ufs_getxattr(const char* path, const char* name, char* value, size_t size)
 {
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return (int)ufs_getxattr(fs, path, name, value, size);
 }
 
 static int f2_ufs_listxattr(const char* path, char* list, size_t size)
 {
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return (int)ufs_listxattr(fs, path, list, size);
 }
 
 static int f2_ufs_removexattr(const char* path, const char* name)
 {
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return ufs_removexattr(fs, path, name);
 }
 
 static int f2_ufs_opendir(const char* path, struct fuse_file_info* fi)
 {
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return ufs_opendir(fs, path, (ufs_dir_t**)&fi->fh);
 }
 
@@ -152,7 +151,7 @@ static int f2_ufs_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
   (void) path;
   (void) offset;
 
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   struct dirent* entry;
   struct stat stbuf;
   int res = 0;
@@ -165,25 +164,25 @@ static int f2_ufs_readdir(const char* path, void* buf, fuse_fill_dir_t filler,
 static int f2_ufs_releasedir(const char* path, struct fuse_file_info* fi)
 {
   (void) path;
-  struct unityfs* fs = fuse_get_context()->private_data;
+  struct unityfs* fs = get_unityfs(fuse_get_context());
   return ufs_closedir(fs, (ufs_dir_t*)fi->fh);
 }
 
 static void* f2_ufs_init(struct fuse_conn_info* conn)
 {
   (void) conn;
-  return ufs_init(fuse_get_context()->private_data);
+  return global_data_create(fuse_get_context()->private_data);
 }
 
 static void f2_ufs_destroy(void* private_data)
 {
-  ufs_shutdown(private_data);
+  global_data_destroy(private_data);
 }
 
 static int f2_ufs_create(const char* path, mode_t mode, struct fuse_file_info* fi)
 {
   struct fuse_context* fctx = fuse_get_context();
-  struct unityfs* fs = fctx->private_data;
+  struct unityfs* fs = get_unityfs(fctx);
   struct process_context pctx;
   change_process_context(fctx, &pctx);
   int res = ufs_open3(fs, path, fi->flags, mode, (ufs_fd_t*)&fi->fh);
@@ -194,18 +193,18 @@ static int f2_ufs_create(const char* path, mode_t mode, struct fuse_file_info* f
 static int f2_ufs_ftruncate(const char* path, off_t offset, struct fuse_file_info* fi)
 {
   (void) path;
-  return ufs_ftruncate(fuse_get_context()->private_data, (ufs_fd_t)fi->fh, offset);
+  return ufs_ftruncate(get_unityfs(fuse_get_context()), (ufs_fd_t)fi->fh, offset);
 }
 
 static int f2_ufs_fgetattr(const char* path, struct stat* stbuf, struct fuse_file_info* fi)
 {
   (void) path;
-  return ufs_fgetattr(fuse_get_context()->private_data, (ufs_fd_t)fi->fh, stbuf);
+  return ufs_fgetattr(get_unityfs(fuse_get_context()), (ufs_fd_t)fi->fh, stbuf);
 }
 
 static int f2_ufs_utimens(const char* path, const struct timespec tv[2])
 {
-  return ufs_utimens(fuse_get_context()->private_data, path, tv);
+  return ufs_utimens(get_unityfs(fuse_get_context()), path, tv);
 }
 
 static struct fuse_operations f2_ufs_oper = {
@@ -250,16 +249,16 @@ static struct fuse_operations f2_ufs_oper = {
 int main(int argc, char* argv[])
 {
   struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
-  char* mountpoint;
+  struct init_data data;
 
-  if (fuse_parse_cmdline(&args, &mountpoint, NULL, NULL) == -1)
+  if (fuse_parse_cmdline(&args, &data.mountpoint, NULL, NULL) == -1)
     return 1;
 
   umask(0);
 
-  int res = fuse_main(argc, argv, &f2_ufs_oper, mountpoint);
+  int res = fuse_main(argc, argv, &f2_ufs_oper, &data);
 
-  free(mountpoint);
+  free(data.mountpoint);
   fuse_opt_free_args(&args);
 
   return res;
