@@ -26,7 +26,7 @@ static int f2_ufs_mkdir(const char* path, mode_t mode)
   struct process_context pctx;
   change_process_context(fctx, &pctx);
   int res = ufs_mkdir(fs, path, mode);
-  restore_process_context(&pctx);
+  restore_process_context(fctx, &pctx);
   return res;
 }
 
@@ -49,7 +49,7 @@ static int f2_ufs_symlink(const char* target, const char* link_path)
   struct process_context pctx;
   change_process_context(fctx, &pctx);
   int res = ufs_symlink(fs, target, link_path);
-  restore_process_context(&pctx);
+  restore_process_context(fctx, &pctx);
   return res;
 }
 
@@ -75,7 +75,7 @@ static int f2_ufs_open(const char* path, struct fuse_file_info* fi)
   struct process_context pctx;
   change_process_context(fctx, &pctx);
   int res = ufs_open(fs, path, fi->flags, (ufs_fd_t*)&fi->fh);
-  restore_process_context(&pctx);
+  restore_process_context(fctx, &pctx);
   return res;
 }
 
@@ -186,7 +186,7 @@ static int f2_ufs_create(const char* path, mode_t mode, struct fuse_file_info* f
   struct process_context pctx;
   change_process_context(fctx, &pctx);
   int res = ufs_open3(fs, path, fi->flags, mode, (ufs_fd_t*)&fi->fh);
-  restore_process_context(&pctx);
+  restore_process_context(fctx, &pctx);
   return res;
 }
 

@@ -12,6 +12,7 @@ struct init_data {
 
 struct global_data {
   struct unityfs* fs;
+  pthread_mutex_t context_mutex;
 };
 
 struct global_data* global_data_create(const struct init_data* init_data);
@@ -29,6 +30,6 @@ struct process_context {
 };
 
 void change_process_context(struct fuse_context* fctx, struct process_context* pctx);
-void restore_process_context(struct process_context* pctx);
+void restore_process_context(struct fuse_context* fctx, struct process_context* pctx);
 
 #endif // CONTEXT_H
