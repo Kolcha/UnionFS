@@ -10,7 +10,6 @@ unityfs_SOURCES =	\
 	init.c		\
 	io.c		\
 	links.c		\
-	main2.c		\
 	ordered_set.c	\
 	ordered_set.h	\
 	private.c	\
@@ -18,8 +17,17 @@ unityfs_SOURCES =	\
 	readdir.c	\
 	unityfs.h	\
 	xattrs.c
-unityfs_CPPFLAGS = -I$(srcdir) -DFUSE_USE_VERSION=26 $(fuse_CFLAGS)
+unityfs_CPPFLAGS = $(fuse_CFLAGS)
 unityfs_LDADD = $(fuse_LIBS)
+
+if use_fuse3
+unityfs_SOURCES += main.c
+fuse_api_version = 32
+else
+unityfs_SOURCES += main2.c
+fuse_api_version = 26
+endif
+unityfs_CPPFLAGS += -DFUSE_USE_VERSION=$(fuse_api_version)
 
 if install_systemd_unit
 systemdunitsdir = $(libdir)/systemd/system

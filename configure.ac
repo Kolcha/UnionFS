@@ -11,9 +11,6 @@ AM_INIT_AUTOMAKE([foreign])
 AC_PROG_CC
 AC_PROG_SED
 
-# Checks for libraries.
-PKG_CHECK_MODULES(fuse, fuse >= 2.6)
-
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h stddef.h stdint.h stdlib.h string.h sys/statvfs.h unistd.h])
 
@@ -37,6 +34,12 @@ AC_CHECK_FUNCS([fchdir ftruncate getcwd memset mkdir rmdir strcasecmp strchr str
 AC_ARG_ENABLE([systemd],
     [AS_HELP_STRING([--enable-systemd], [install the systemd service file])], [], [enable_systemd=no])
 AM_CONDITIONAL([install_systemd_unit], [test "x$enable_systemd" != "xno"])
+
+AC_ARG_WITH([fuse3], [AS_HELP_STRING([--with-fuse3], [use FUSE3 API instead of FUSE2])])
+AS_IF([test "x$with_fuse3" = "xyes"],
+    [PKG_CHECK_MODULES([fuse], [fuse3 >= 3.2])],
+    [PKG_CHECK_MODULES([fuse], [fuse >= 2.6])])
+AM_CONDITIONAL([use_fuse3], [test "x$with_fuse3" = "xyes"])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
