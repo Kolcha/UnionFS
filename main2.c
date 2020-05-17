@@ -5,25 +5,8 @@
 
 #include <fuse.h>
 
+#include "context.h"
 #include "unityfs.h"
-
-struct process_context {
-  mode_t umask;
-};
-
-static void change_process_context(struct fuse_context* fctx, struct process_context* pctx)
-{
-  setegid(fctx->gid);
-  seteuid(fctx->uid);
-  pctx->umask = umask(fctx->umask);
-}
-
-static void restore_process_context(struct process_context* pctx)
-{
-  setegid(getgid());
-  seteuid(getuid());
-  umask(pctx->umask);
-}
 
 static int f2_ufs_getattr(const char* path, struct stat* stbuf)
 {
