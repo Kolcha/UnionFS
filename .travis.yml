@@ -8,10 +8,15 @@ addons:
   apt:
     packages:
       - libfuse-dev
+      - libfuse3-dev
+
+env:
+  - options="--enable-systemd"
+  - options="--with-fuse3"
 
 script:
   - autoreconf -i
-  - ./configure --enable-systemd
+  - ./configure $options
   - make
 
 before_deploy:
