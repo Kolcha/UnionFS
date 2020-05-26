@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([unityfs], [2.3.0])
+AC_INIT([unityfs], [2.3.1])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([unityfs.h])
 
