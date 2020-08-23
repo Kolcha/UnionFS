@@ -18,6 +18,3 @@ script:
   - autoreconf -i
   - ./configure $options
   - make
-
-before_deploy:
-  - make dist
