@@ -30,16 +30,3 @@ unityfs_SOURCES += main2.c
 fuse_api_version = 26
 endif
 unityfs_CPPFLAGS += -DFUSE_USE_VERSION=$(fuse_api_version)
-
-if install_systemd_unit
-systemdunitsdir = $(libdir)/systemd/system
-systemdunits_DATA = $(builddir)/unityfs.service
-
-unityfs.service: unityfs.service.in Makefile
-	$(SED) -e 's,[@]bindir[@],$(bindir),g' \
-	< $(srcdir)/unityfs.service.in > unityfs.service
-
-CLEANFILES = $(systemdunits_DATA)
-endif
-
-EXTRA_DIST = unityfs.service.in

@@ -11,7 +11,7 @@ addons:
       - libfuse3-dev
 
 env:
-  - options="--enable-systemd"
+  - options=""
   - options="--with-fuse3"
 
 script:
