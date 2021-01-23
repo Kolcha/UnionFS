@@ -12,9 +12,8 @@ addons:
 
 env:
   - options=""
-  - options="--with-fuse3"
+  - options="-D USE_FUSE3=YES"
 
 script:
-  - autoreconf -i
-  - ./configure $options
-  - make
+  - cmake $options .
+  - cmake --build .
