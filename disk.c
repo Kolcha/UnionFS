@@ -13,7 +13,7 @@ static uint64_t get_next_inode_offset(struct ufs_disk* last_disk)
   return last_disk->inode_offset + last_disk->max_inodes;
 }
 
-int ufs_add_disk(struct unityfs* fs, const char* mountpoint, unsigned int flags)
+int ufs_add_disk(struct unionfs* fs, const char* mountpoint, unsigned int flags)
 {
   struct statvfs st_buf;
   if (statvfs(mountpoint, &st_buf) != 0)

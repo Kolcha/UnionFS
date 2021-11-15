@@ -1,9 +1,9 @@
-#ifndef UNITYFS_CORE_H
-#define UNITYFS_CORE_H
+#ifndef UNIONFS_CORE_H
+#define UNIONFS_CORE_H
 
-struct unityfs;
+struct unionfs;
 
-struct unityfs* unityfs_create(void);
-void unityfs_destroy(struct unityfs* fs);
+struct unionfs* unionfs_create(void);
+void unionfs_destroy(struct unionfs* fs);
 
-#endif // UNITYFS_CORE_H
+#endif // UNIONFS_CORE_H

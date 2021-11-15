@@ -1,4 +1,4 @@
-#include "unityfs.h"
+#include "unionfs.h"
 #include "private.h"
 
 #include <errno.h>
@@ -15,7 +15,7 @@ struct ufs_dir {
   dev_t* o_dir_disks;
 };
 
-int ufs_opendir(struct unityfs* fs, const char* path, struct ufs_dir** rdir)
+int ufs_opendir(struct unionfs* fs, const char* path, struct ufs_dir** rdir)
 {
   struct ufs_dir* udir = malloc(sizeof(struct ufs_dir));
   udir->opened_dirs = calloc(fs->disks_count + 1, sizeof(DIR*));
@@ -61,12 +61,12 @@ int ufs_opendir(struct unityfs* fs, const char* path, struct ufs_dir** rdir)
   return 0;
 }
 
-int ufs_readdir(struct unityfs* fs, struct ufs_dir* dir, struct dirent** rentry)
+int ufs_readdir(struct unionfs* fs, struct ufs_dir* dir, struct dirent** rentry)
 {
   return ufs_readdir_plus(fs, dir, rentry, NULL);
 }
 
-int ufs_readdir_plus(struct unityfs* fs, struct ufs_dir* dir, struct dirent** rentry, struct stat* stbuf)
+int ufs_readdir_plus(struct unionfs* fs, struct ufs_dir* dir, struct dirent** rentry, struct stat* stbuf)
 {
   while (*dir->current_dir) {
     errno = 0;
@@ -119,7 +119,7 @@ int ufs_readdir_plus(struct unityfs* fs, struct ufs_dir* dir, struct dirent** re
   return -errno;
 }
 
-int ufs_closedir(struct unityfs* fs, struct ufs_dir* dir)
+int ufs_closedir(struct unionfs* fs, struct ufs_dir* dir)
 {
   (void) fs;
 

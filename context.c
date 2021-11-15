@@ -7,7 +7,7 @@
 
 #include <fuse.h>
 
-#include "unityfs.h"
+#include "unionfs.h"
 
 static inline pthread_mutex_t* get_context_mutex(struct fuse_context* fctx)
 {

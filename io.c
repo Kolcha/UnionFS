@@ -1,4 +1,4 @@
-#include "unityfs.h"
+#include "unionfs.h"
 #include "private.h"
 
 #include <errno.h>
@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-int ufs_mkdir(struct unityfs* fs, const char* path, mode_t mode)
+int ufs_mkdir(struct unionfs* fs, const char* path, mode_t mode)
 {
   char* real_path = new_real_path(fs, path);
   int res = mkdir(real_path, mode);
@@ -16,7 +16,7 @@ int ufs_mkdir(struct unityfs* fs, const char* path, mode_t mode)
   return res == 0 ? 0 : -errno;
 }
 
-int ufs_remove(struct unityfs* fs, const char* path)
+int ufs_remove(struct unionfs* fs, const char* path)
 {
   for (struct ufs_disk* disk = fs->all_disks; disk != fs->all_disks + fs->disks_count; ++disk) {
     char* real_path = get_real_path(disk, path);
@@ -35,7 +35,7 @@ int ufs_remove(struct unityfs* fs, const char* path)
   return -errno;
 }
 
-int ufs_rmdir(struct unityfs* fs, const char* path)
+int ufs_rmdir(struct unionfs* fs, const char* path)
 {
   bool dir_removed = false;
 
@@ -57,7 +57,7 @@ int ufs_rmdir(struct unityfs* fs, const char* path)
   return dir_removed ? 0 : -errno;
 }
 
-int ufs_truncate(struct unityfs* fs, const char* path, off_t offset)
+int ufs_truncate(struct unionfs* fs, const char* path, off_t offset)
 {
   for (struct ufs_disk* disk = fs->all_disks; disk != fs->all_disks + fs->disks_count; ++disk) {
     char* real_path = get_real_path(disk, path);
@@ -73,13 +73,13 @@ int ufs_truncate(struct unityfs* fs, const char* path, off_t offset)
   return -errno;
 }
 
-int ufs_ftruncate(struct unityfs* fs, ufs_fd_t fd, off_t offset)
+int ufs_ftruncate(struct unionfs* fs, ufs_fd_t fd, off_t offset)
 {
   (void) fs;
   return ftruncate(fd, offset) == 0 ? 0 : -errno;
 }
 
-int ufs_open(struct unityfs* fs, const char* path, int flags, ufs_fd_t* fd)
+int ufs_open(struct unionfs* fs, const char* path, int flags, ufs_fd_t* fd)
 {
   for (struct ufs_disk* disk = fs->all_disks; disk != fs->all_disks + fs->disks_count; ++disk) {
     char* real_path = get_real_path(disk, path);
@@ -95,7 +95,7 @@ int ufs_open(struct unityfs* fs, const char* path, int flags, ufs_fd_t* fd)
   return -errno;
 }
 
-int ufs_open3(struct unityfs* fs, const char* path, int flags, mode_t mode, ufs_fd_t* fd)
+int ufs_open3(struct unionfs* fs, const char* path, int flags, mode_t mode, ufs_fd_t* fd)
 {
   char* real_path = new_real_path(fs, path);
   *fd = open(real_path, flags, mode);
@@ -103,25 +103,25 @@ int ufs_open3(struct unityfs* fs, const char* path, int flags, mode_t mode, ufs_
   return *fd > 0 ? 0 : -errno;
 }
 
-ssize_t ufs_read(struct unityfs* fs, ufs_fd_t fd, off_t offset, size_t size, void* buf)
+ssize_t ufs_read(struct unionfs* fs, ufs_fd_t fd, off_t offset, size_t size, void* buf)
 {
   (void) fs;
   return pread(fd, buf, size, offset);
 }
 
-ssize_t ufs_write(struct unityfs* fs, ufs_fd_t fd, off_t offset, size_t size, const void* data)
+ssize_t ufs_write(struct unionfs* fs, ufs_fd_t fd, off_t offset, size_t size, const void* data)
 {
   (void) fs;
   return pwrite(fd, data, size, offset);
 }
 
-int ufs_close(struct unityfs* fs, ufs_fd_t fd)
+int ufs_close(struct unionfs* fs, ufs_fd_t fd)
 {
   (void) fs;
   return close(fd) == 0 ? 0 : -errno;
 }
 
-int ufs_fsync(struct unityfs* fs, ufs_fd_t fd, int sync_metadata)
+int ufs_fsync(struct unionfs* fs, ufs_fd_t fd, int sync_metadata)
 {
   (void) fs;
   int(*func)(int) = sync_metadata ? &fsync : &fdatasync;

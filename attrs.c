@@ -1,4 +1,4 @@
-#include "unityfs.h"
+#include "unionfs.h"
 #include "private.h"
 
 #include <errno.h>
@@ -20,7 +20,7 @@ static struct timespec* max_timespec(struct timespec* a, struct timespec* b)
   return less_timespec(a, b) ? a : b;
 }
 
-int ufs_getattr(struct unityfs* fs, const char* path, struct stat* stbuf)
+int ufs_getattr(struct unionfs* fs, const char* path, struct stat* stbuf)
 {
   bool item_found = false;
 
@@ -54,7 +54,7 @@ int ufs_getattr(struct unityfs* fs, const char* path, struct stat* stbuf)
   return item_found ? 0 : -errno;
 }
 
-int ufs_fgetattr(struct unityfs* fs, ufs_fd_t fd, struct stat* stbuf)
+int ufs_fgetattr(struct unionfs* fs, ufs_fd_t fd, struct stat* stbuf)
 {
   if (fstat(fd, stbuf) != 0)
     return -errno;
@@ -63,7 +63,7 @@ int ufs_fgetattr(struct unityfs* fs, ufs_fd_t fd, struct stat* stbuf)
   return 0;
 }
 
-int ufs_chmod(struct unityfs* fs, const char* path, mode_t mode)
+int ufs_chmod(struct unionfs* fs, const char* path, mode_t mode)
 {
   bool item_found = false;
 
@@ -82,13 +82,13 @@ int ufs_chmod(struct unityfs* fs, const char* path, mode_t mode)
   return item_found ? 0 : -errno;
 }
 
-int ufs_fchmod(struct unityfs* fs, ufs_fd_t fd, mode_t mode)
+int ufs_fchmod(struct unionfs* fs, ufs_fd_t fd, mode_t mode)
 {
   (void) fs;
   return fchmod(fd, mode) == 0 ? 0 : -errno;
 }
 
-int ufs_chown(struct unityfs* fs, const char* path, uid_t uid, gid_t gid)
+int ufs_chown(struct unionfs* fs, const char* path, uid_t uid, gid_t gid)
 {
   bool item_found = false;
 
@@ -107,13 +107,13 @@ int ufs_chown(struct unityfs* fs, const char* path, uid_t uid, gid_t gid)
   return item_found ? 0 : -errno;
 }
 
-int ufs_fchown(struct unityfs* fs, ufs_fd_t fd, uid_t uid, gid_t gid)
+int ufs_fchown(struct unionfs* fs, ufs_fd_t fd, uid_t uid, gid_t gid)
 {
   (void) fs;
   return fchown(fd, uid, gid) == 0 ? 0 : -errno;
 }
 
-int ufs_statfs(struct unityfs* fs, const char* path, struct statvfs* stbuf)
+int ufs_statfs(struct unionfs* fs, const char* path, struct statvfs* stbuf)
 {
   memset(stbuf, 0, sizeof(struct statvfs));
   stbuf->f_bsize = 4096;
@@ -141,7 +141,7 @@ int ufs_statfs(struct unityfs* fs, const char* path, struct statvfs* stbuf)
   return -errno;
 }
 
-int ufs_utimens(struct unityfs* fs, const char* path, const struct timespec times[2])
+int ufs_utimens(struct unionfs* fs, const char* path, const struct timespec times[2])
 {
   bool item_found = false;
 
@@ -160,7 +160,7 @@ int ufs_utimens(struct unityfs* fs, const char* path, const struct timespec time
   return item_found ? 0 : -errno;
 }
 
-int ufs_futimens(struct unityfs* fs, ufs_fd_t fd, const struct timespec times[2])
+int ufs_futimens(struct unionfs* fs, ufs_fd_t fd, const struct timespec times[2])
 {
   (void) fs;
   return futimens(fd, times) == 0 ? 0 : -errno;

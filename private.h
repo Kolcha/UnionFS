@@ -1,5 +1,5 @@
-#ifndef UNITYFS_PRIVATE_H
-#define UNITYFS_PRIVATE_H
+#ifndef UNIONFS_PRIVATE_H
+#define UNIONFS_PRIVATE_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -21,7 +21,7 @@ struct ufs_disk {
   uint32_t reserved;
 };
 
-struct unityfs {
+struct unionfs {
   const char* mountpoint;
   struct ufs_config* config;
   struct ufs_disk* all_disks;
@@ -31,8 +31,8 @@ struct unityfs {
 };
 
 char* get_real_path(struct ufs_disk* disk, const char* path);
-char* new_real_path(struct unityfs* fs, const char* path);
+char* new_real_path(struct unionfs* fs, const char* path);
 
-ino_t calc_ino(struct unityfs* fs, dev_t dev_id, ino_t orig_ino);
+ino_t calc_ino(struct unionfs* fs, dev_t dev_id, ino_t orig_ino);
 
-#endif // UNITYFS_PRIVATE_H
+#endif // UNIONFS_PRIVATE_H

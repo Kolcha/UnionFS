@@ -1,4 +1,4 @@
-#include "unityfs.h"
+#include "unionfs.h"
 #include "private.h"
 
 #include <stdbool.h>
@@ -12,7 +12,7 @@
 
 static const char* SECTION_GLOBAL = "global";
 
-static void add_disks_from_file(struct unityfs* fs, const char* filename)
+static void add_disks_from_file(struct unionfs* fs, const char* filename)
 {
   FILE* f = fopen(filename, "r");
   if (!f)
@@ -101,7 +101,7 @@ static void on_option_found(void* section_data, const char* key, const char* val
 
   struct config_section* section = section_data;
   if (strcasecmp(section->name, SECTION_GLOBAL) == 0) {
-    struct unityfs* fs = user_data;
+    struct unionfs* fs = user_data;
 
     if (strcmp(key, "disk cache timeout") == 0) {
       int timeout = atoi(value);
@@ -120,9 +120,9 @@ static void on_option_found(void* section_data, const char* key, const char* val
   }
 }
 
-struct unityfs* ufs_init(const char* mountpoint)
+struct unionfs* ufs_init(const char* mountpoint)
 {
-  struct unityfs* fs = unityfs_create();
+  struct unionfs* fs = unionfs_create();
   if (!fs)
     return fs;
 
@@ -135,7 +135,7 @@ struct unityfs* ufs_init(const char* mountpoint)
   };
 
   const char* config_file_locations[] = {
-    "/etc/unityfs.conf", "unityfs.conf", NULL
+    "/etc/unionfs.conf", "unionfs.conf", NULL
   };
 
   for (const char** filename = config_file_locations; *filename; filename++) {
@@ -152,7 +152,7 @@ struct unityfs* ufs_init(const char* mountpoint)
   return fs;
 }
 
-void ufs_shutdown(struct unityfs* fs)
+void ufs_shutdown(struct unionfs* fs)
 {
-  unityfs_destroy(fs);
+  unionfs_destroy(fs);
 }

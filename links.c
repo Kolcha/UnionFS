@@ -1,4 +1,4 @@
-#include "unityfs.h"
+#include "unionfs.h"
 #include "private.h"
 
 #include <errno.h>
@@ -10,7 +10,7 @@
 #include <libgen.h>
 #include <unistd.h>
 
-int ufs_readlink(struct unityfs* fs, const char* path, char* buf, size_t sz)
+int ufs_readlink(struct unionfs* fs, const char* path, char* buf, size_t sz)
 {
   for (struct ufs_disk* disk = fs->all_disks; disk != fs->all_disks + fs->disks_count; ++disk) {
     char* real_path = get_real_path(disk, path);
@@ -58,7 +58,7 @@ static char* resolve_link_target(const char* target, const char* link)
   return r_target;
 }
 
-static char** new_real_links(struct unityfs* fs, const char* target, const char* link)
+static char** new_real_links(struct unionfs* fs, const char* target, const char* link)
 {
   char** path_list = calloc(fs->disks_count + 1, sizeof(char*));
   char** path_list_iter = path_list;
@@ -94,7 +94,7 @@ static void free_links_list(char** paths_list)
   free(paths_list);
 }
 
-int ufs_symlink(struct unityfs* fs, const char* target, const char* link_path)
+int ufs_symlink(struct unionfs* fs, const char* target, const char* link_path)
 {
   bool created = false;
   char** links_paths = new_real_links(fs, target, link_path);

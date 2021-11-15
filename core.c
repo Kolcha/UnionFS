@@ -3,22 +3,22 @@
 
 #include <stdlib.h>
 
-struct unityfs* unityfs_create()
+struct unionfs* unionfs_create()
 {
-  struct unityfs* fs = calloc(1, sizeof(struct unityfs));
+  struct unionfs* fs = calloc(1, sizeof(struct unionfs));
   if (fs) {
     fs->config = calloc(1, sizeof(struct ufs_config));
     if (fs->config) {
       fs->config->disk_cache_timeout = 3600;
     } else {
-      unityfs_destroy(fs);
+      unionfs_destroy(fs);
       fs = NULL;
     }
   }
   return fs;
 }
 
-void unityfs_destroy(struct unityfs* fs)
+void unionfs_destroy(struct unionfs* fs)
 {
   if (fs && fs->all_disks) {
     for (size_t i = 0; i < fs->disks_count; i++)
