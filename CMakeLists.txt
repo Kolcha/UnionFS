@@ -34,11 +34,11 @@ add_executable(unionfs
 if (USE_FUSE3)
     pkg_check_modules(FUSE REQUIRED IMPORTED_TARGET fuse3>=3.2)
     target_compile_definitions(unionfs PRIVATE FUSE_USE_VERSION=32)
-    target_sources(unionfs PRIVATE main.c)
+    target_sources(unionfs PRIVATE main_fuse3.c)
 else()
     pkg_check_modules(FUSE REQUIRED IMPORTED_TARGET fuse>=2.6)
     target_compile_definitions(unionfs PRIVATE FUSE_USE_VERSION=26)
-    target_sources(unionfs PRIVATE main2.c)
+    target_sources(unionfs PRIVATE main_fuse2.c)
 endif()
 
 target_link_libraries(unionfs PRIVATE PkgConfig::FUSE)
