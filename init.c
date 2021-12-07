@@ -2,7 +2,6 @@
 #include "private.h"
 
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -11,28 +10,6 @@
 #include "disk.h"
 
 static const char* SECTION_GLOBAL = "global";
-
-static void add_disks_from_file(struct unionfs* fs, const char* filename)
-{
-  FILE* f = fopen(filename, "r");
-  if (!f)
-    return;
-
-  char* line = NULL;
-  size_t len = 0;
-  ssize_t nread;
-
-  while ((nread = getline(&line, &len, f)) != -1) {
-    if (line[nread-1] == '\n')
-      line[nread-1] = '\0';
-
-    ufs_add_disk(fs, line, 0);
-  }
-
-  free(line);
-
-  fclose(f);
-}
 
 static bool parse_bool(const char* str, bool* value)
 {
@@ -140,10 +117,6 @@ struct unionfs* ufs_init(const char* mountpoint)
 
   for (const char** filename = config_file_locations; *filename; filename++) {
     config_read_file(*filename, &cfg_handlers, fs);
-
-    /* if nothing added - fallback to old config format */
-    if (fs->disks_count == 0)
-      add_disks_from_file(fs, *filename);
 
     if (fs->disks_count > 0)
       break;
