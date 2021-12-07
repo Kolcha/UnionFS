@@ -2,16 +2,55 @@
 #include "private.h"
 
 #include <errno.h>
+#include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <unistd.h>
 
-#include "ordered_set.h"
+struct bst_node {
+  char* data;
+  struct bst_node* left;
+  struct bst_node* right;
+};
+
+static void bst_free(struct bst_node* node)
+{
+  if (node == NULL)
+    return;
+
+  bst_free(node->left);
+  bst_free(node->right);
+
+  free(node->data);
+  free(node);
+}
+
+static bool bst_insert(struct bst_node** root, const char* data)
+{
+  struct bst_node** walk = root;
+  while (*walk) {
+    int cmp_res = strcmp(data, (*walk)->data);
+
+    if (cmp_res == 0)
+      return false;
+
+    if (cmp_res > 0)
+      walk = &(*walk)->right;
+    else
+      walk = &(*walk)->left;
+  }
+
+  *walk = calloc(1, sizeof(struct bst_node));
+  (*walk)->data = strdup(data);
+
+  return true;
+}
 
 struct ufs_dir {
   DIR** opened_dirs;
   DIR** current_dir;
-  ordered_set_t* known_names;
+  struct bst_node* known_names;
   dev_t* o_dir_disks;
 };
 
@@ -20,7 +59,7 @@ int ufs_opendir(struct unionfs* fs, const char* path, struct ufs_dir** rdir)
   struct ufs_dir* udir = malloc(sizeof(struct ufs_dir));
   udir->opened_dirs = calloc(fs->disks_count + 1, sizeof(DIR*));
   udir->current_dir = udir->opened_dirs;
-  udir->known_names = ordered_set_create();
+  udir->known_names = NULL;
   udir->o_dir_disks = NULL;
 
   DIR** opened_dir = udir->opened_dirs;
@@ -82,7 +121,7 @@ int ufs_readdir_plus(struct unionfs* fs, struct ufs_dir* dir, struct dirent** re
       continue;
     }
 
-    if (ordered_set_insert(dir->known_names, entry->d_name)) {
+    if (bst_insert(&dir->known_names, entry->d_name)) {
       dev_t dev_id = dir->o_dir_disks[dir->current_dir - dir->opened_dirs];
       entry->d_ino = calc_ino(fs, dev_id, entry->d_ino);
 
@@ -123,7 +162,7 @@ int ufs_closedir(struct unionfs* fs, struct ufs_dir* dir)
 {
   (void) fs;
 
-  ordered_set_destroy(dir->known_names);
+  bst_free(dir->known_names);
   for (DIR** d = dir->opened_dirs; *d; ++d)
     closedir(*d);
   free(dir->opened_dirs);

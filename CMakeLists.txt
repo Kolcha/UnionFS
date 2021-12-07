@@ -22,8 +22,6 @@ add_executable(unionfs
     init.c
     io.c
     links.c
-    ordered_set.c
-    ordered_set.h
     private.c
     private.h
     readdir.c
