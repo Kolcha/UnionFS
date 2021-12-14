@@ -1,11 +1,11 @@
 UnionFS
 =======
 
-This simple FUSE-based filesystem is just a wrapper that allows to "merge" few mountpoints into one. It is like software replacement for RAID. The effect of this is somehow the same as creating RAID0, but this works in terms of mountpoint rather than devices, so even few partitions of the same drive can be "merged" without any actual partition table changes. From other side, unlike RAID array creation, it does not require any data destruction for its initialization and disks (mountpoints) order doesn't matter. Again, comparing to RAID0, this has some kind of load balancing (but pretty specific, details below).
+This simple FUSE-based filesystem is just a wrapper that allows to "merge" few mountpoints into one. It is like software replacement for RAID. The effect of this is somehow the same as creating RAID0, but this works in terms of mountpoints rather than devices, so even few partitions of the same drive can be "merged" without any actual partition table changes. From other side, unlike RAID array creation, it does not require any data destruction for its initialization and disks (mountpoints) order doesn't matter. Again, comparing to RAID0, this has some kind of load balancing (but pretty specific, details below).
 
 In general, this is POSIX-compliant FS with few exceptions due to implementation and FUSE specific itself. But real available FS features set mostly depends on underlying FS and may vary.
 
-There is no any specific restrictions to underlying FS, even read-only mountpoints can be used, but it is recommended (especially in case of RW) to use the same FS for all underlying mountpoints.
+There are no any specific restrictions to underlying FS, even read-only mountpoints can be used, but it is recommended (especially in case of RW) to use the same FS for all underlying mountpoints.
 
 Balancing
 ---------
